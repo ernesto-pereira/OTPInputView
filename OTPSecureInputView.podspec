@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'OTPSecureInputView'
-  s.version          = '0.0.6'
+  s.version          = '0.0.7'
   s.summary          = 'OTP SecureInputView is a simple, Fully customisable OTP code verification view in Swift.'
 
 # This description is used to generate tags and improve search results.
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
     'OTP-SecureInputView is a fork of OTPInputView by abhishek-001, an awesome pod aimed to make your life easier when dealing with OTP Verification i.e Very common feature in Apps nowadays.'
                        DESC
 
-                       s.homepage         = 'https://github.com/abhishek-001/OTPInputView'
+                       s.homepage         = 'https://github.com/ernesto-pereira/OTPInputView'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'abhishek-001' => 'work.abhirathi@gmail.com' }
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '11.0'
 
-  s.source_files = 'OTPInputView/Classes/*.swift'
+  s.source_files = 'OTPSecureInputView/Classes/*.swift'
   s.frameworks = 'UIKit'
   s.swift_version = '4.0'
   
