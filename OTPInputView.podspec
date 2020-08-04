@@ -7,9 +7,9 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'OTPInputView'
-  s.version          = '0.1.2'
-  s.summary          = 'OTP InputView is a simple, Fully customisable OTP code verification view in Swift.'
+  s.name             = 'OTPSecureInputView'
+  s.version          = '0.0.1'
+  s.summary          = 'OTP SecureInputView is a simple, Fully customisable OTP code verification view in Swift.'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,15 +18,14 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-    'OTP-InputView is an awesome pod aimed to make your life easier when dealing with OTP Verification i.e Very common feature in Apps nowadays.'
+    'OTP-SecureInputView is a fork of OTPInputView by abhishek-001, an awesome pod aimed to make your life easier when dealing with OTP Verification i.e Very common feature in Apps nowadays.'
                        DESC
 
                        s.homepage         = 'https://github.com/abhishek-001/OTPInputView'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'abhishek-001' => 'work.abhirathi@gmail.com' }
-  s.source           = { :git => 'https://github.com/abhishek-001/OTPInputView.git', :tag => s.version.to_s }
-  s.social_media_url = 'https://twitter.com/abhirathi007'
+  s.source           = { :git => 'https://github.com/ernesto-pereira/OTPInputView', :tag => s.version.to_s }
 
   s.ios.deployment_target = '11.0'
 
