@@ -21,6 +21,7 @@ public protocol OTPViewDelegate {
     @IBInspectable var shadowColour: UIColor = .darkGray
     @IBInspectable var textColor: UIColor = .black
     @IBInspectable var font: UIFont = UIFont.boldSystemFont(ofSize: 23)
+    @IBInspectable var secureTextEntry: Bool = false
     public var delegateOTP: OTPViewDelegate?
     
     override public func prepareForInterfaceBuilder() {
@@ -67,6 +68,7 @@ public protocol OTPViewDelegate {
         textField.dropShadow(shadowOpacity: 0.6, shadowColor: shadowColour)
         textField.textColor = textColor
         textField.font = font
+        textField.secureTextEntry = shouldHideDigits
     }
 }
 
@@ -74,7 +76,9 @@ extension OTPInputView: UITextFieldDelegate {
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         var nextTag = 0
-        if string.checkBackspace() {
+        
+        if string.checkBackspace()
+        {
             textField.deleteBackward()
             return false
         } else if string.count == 1
@@ -147,6 +151,3 @@ extension UIView {
     }
     
 }
-
-
-
