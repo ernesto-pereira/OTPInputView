@@ -68,7 +68,7 @@ public protocol OTPViewDelegate {
         textField.dropShadow(shadowOpacity: 0.6, shadowColor: shadowColour)
         textField.textColor = textColor
         textField.font = font
-        textField.secureTextEntry = secureTextEntry
+        textField.isSecureTextEntry = secureTextEntry
     }
 }
 
