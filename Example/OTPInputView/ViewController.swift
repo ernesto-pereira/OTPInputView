@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import OTPInputView
+import OTPSecureInputView
 
 class ViewController: UIViewController {
 
