@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func showPinAction() {
+    @IBAction func showPinAction(_ sender: Any) {
         otpInputView.otpFetch()
     }
     

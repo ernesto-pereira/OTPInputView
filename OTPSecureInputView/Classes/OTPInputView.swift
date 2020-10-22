@@ -110,7 +110,6 @@ extension OTPInputView: UITextFieldDelegate {
         print("editing")
     }
     
-    
     public func otpFetch() {
         var otp = ""
         for tag in 1...maximumDigits {
