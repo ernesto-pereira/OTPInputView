@@ -12,44 +12,75 @@ import UIKit
 public protocol OTPViewDelegate {
     func didFinishedEnterOTP(otpNumber: String)
     func otpNotValid()
+    func didEndEditing()
+    func didBeginEditing()
+}
+
+public extension OTPViewDelegate {
+    func didFinishedEnterOTP(otpNumber: String) {}
+
+    func otpNotValid() {}
+
+    func didEndEditing() {
+        print("didEndEditing")
+    }
+
+    func didBeginEditing() {
+        print("didBeginEditing")
+    }
 }
 
 @IBDesignable public class OTPInputView: UIView {
-    
-    @IBInspectable var maximumDigits: Int = 6
+    static let DEFAULT_MAX_DIGITS = 6
+    @IBInspectable public var maximumDigits: Int = DEFAULT_MAX_DIGITS {
+        didSet { self.redraw() }
+    }
     @IBInspectable var backgroundColour: UIColor = .white
     @IBInspectable var shadowColour: UIColor = .darkGray
     @IBInspectable var textColor: UIColor = .black
     @IBInspectable var font: UIFont = UIFont.boldSystemFont(ofSize: 23)
-    @IBInspectable var secureTextEntry: Bool = false
+    @IBInspectable public var secureTextEntry: Bool = false {
+        didSet { self.redraw() }
+    }
     public var delegateOTP: OTPViewDelegate?
-    
+    private lazy var stackView: UIStackView = {
+        let s = UIStackView()
+        s.translatesAutoresizingMaskIntoConstraints = false
+        s.axis = .horizontal
+        s.alignment = .fill
+        s.spacing = 10
+        s.distribution = .fillEqually
+        return s
+    }()
+
     override public func prepareForInterfaceBuilder() {
         setupTextFields()
     }
-    
+
     override public func awakeFromNib() {
         setupTextFields()
     }
-    
+
     fileprivate func setupTextFields() {
+        self.maximumDigits = OTPInputView.DEFAULT_MAX_DIGITS
+        self.secureTextEntry = false
         backgroundColor = .clear
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stackView)
-        
-        NSLayoutConstraint.activate([
-            stackView.widthAnchor.constraint(equalTo: widthAnchor),
-            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            stackView.heightAnchor.constraint(equalTo: heightAnchor)
-            ])
-        
-        stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.spacing = 10
-        stackView.distribution = .fillEqually
-        
+        NSLayoutConstraint.activate(
+                [
+                    stackView.widthAnchor.constraint(equalTo: widthAnchor),
+                    stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                    stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+                    stackView.heightAnchor.constraint(equalTo: heightAnchor)
+                ]
+        )
+    }
+
+    func redraw() {
+        stackView.arrangedSubviews.forEach { view in
+            stackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
         for tag in 1...maximumDigits {
             let textField = OTPTextField()
             textField.tag = tag //set Tag to textField
@@ -57,9 +88,9 @@ public protocol OTPViewDelegate {
             setupTextFieldStyle(textField)  // set the style accordingly
         }
     }
-    
+
     fileprivate func setupTextFieldStyle(_ textField: UITextField) {
-        textField.delegate = self // set up textfield delegate
+        textField.delegate = self // set up textField delegate
         textField.backgroundColor = .white
         textField.keyboardType = .numberPad
         textField.textAlignment = .center
@@ -73,20 +104,20 @@ public protocol OTPViewDelegate {
 }
 
 extension OTPInputView: UITextFieldDelegate {
-    
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+
+    public func textField(_ textField: UITextField,
+                          shouldChangeCharactersIn range: NSRange,
+                          replacementString string: String
+    ) -> Bool {
         var nextTag = 0
-        
-        if string.checkBackspace()
-        {
+
+        if string.checkBackspace() {
             textField.deleteBackward()
             return false
-        } else if string.count == 1
-        {
+        } else if string.count == 1 {
             textField.text = string
             nextTag = textField.tag + 1
-        } else if string.count == maximumDigits
-        {
+        } else if string.count == maximumDigits {
             var otpPasted = string
             for tag in 1...maximumDigits {
                 guard let textfield = viewWithTag(tag) as? UITextField else { continue }
@@ -94,7 +125,7 @@ extension OTPInputView: UITextFieldDelegate {
             }
             otpFetch()
         }
-        
+
         if let nextTextfield = viewWithTag(nextTag) as? OTPTextField {
             nextTextfield.becomeFirstResponder()
         } else {
@@ -105,18 +136,22 @@ extension OTPInputView: UITextFieldDelegate {
         }
         return false
     }
-    
+
     public func textFieldDidBeginEditing(_ textField: UITextField) {
-        print("editing")
+        delegateOTP?.didBeginEditing()
     }
-    
+
+    public func textFieldDidEndEditing(_ textField: UITextField) {
+        delegateOTP?.didEndEditing()
+    }
+
     public func otpFetch() {
         var otp = ""
         for tag in 1...maximumDigits {
             guard let textfield = viewWithTag(tag) as? UITextField else { continue }
             otp += textfield.text!
         }
-        
+
         // Check if OTP is complete, i.e equals to maxDigits allowed
         if otp.count == maximumDigits {
             delegateOTP?.didFinishedEnterOTP(otpNumber: otp)
@@ -141,12 +176,15 @@ extension String {
 }
 
 extension UIView {
-    func dropShadow( shadowRadius: CGFloat = 2.0, offsetSize: CGSize = CGSize(width: 2, height: 5), shadowOpacity: Float = 0.5, shadowColor: UIColor = UIColor.lightGray ) {
+    func dropShadow(shadowRadius: CGFloat = 2.0,
+                    offsetSize: CGSize = CGSize(width: 2, height: 5),
+                    shadowOpacity: Float = 0.5,
+                    shadowColor: UIColor = UIColor.lightGray
+    ) {
         layer.masksToBounds = false
         layer.shadowColor = shadowColor.cgColor
         layer.shadowOpacity = shadowOpacity
         layer.shadowOffset = offsetSize
         layer.shadowRadius = shadowRadius
     }
-    
 }
