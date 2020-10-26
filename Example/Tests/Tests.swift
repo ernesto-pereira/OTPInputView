@@ -1,5 +1,5 @@
 import XCTest
-import OTPInputView
+import OTPSecureInputView
 
 class Tests: XCTestCase {
     

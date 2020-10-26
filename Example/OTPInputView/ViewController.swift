@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import OTPInputView
+import OTPSecureInputView
 
 class ViewController: UIViewController {
 
@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func showPinAction() {
+    @IBAction func showPinAction(_ sender: Any) {
         otpInputView.otpFetch()
     }
     

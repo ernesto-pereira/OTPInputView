@@ -1,7 +1,7 @@
 use_frameworks!
-
+platform :ios, '13.0'
 target 'OTPInputView_Example' do
-  pod 'OTPInputView', :path => '../'
+  pod 'OTPSecureInputView', :path => '../'
 
   target 'OTPInputView_Tests' do
     inherit! :search_paths

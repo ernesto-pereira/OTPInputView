@@ -212,11 +212,12 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						DevelopmentTeam = 68A6P5UR82;
+						DevelopmentTeam = H7EYDG424Q;
 						LastSwiftMigration = 0900;
 					};
 					607FACE41AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
+						DevelopmentTeam = H7EYDG424Q;
 						LastSwiftMigration = 0900;
 						TestTargetID = 607FACCF1AFB9204008FA782;
 					};
@@ -269,11 +270,11 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OTPInputView_Example/Pods-OTPInputView_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/OTPInputView/OTPInputView.framework",
+				"${BUILT_PRODUCTS_DIR}/OTPSecureInputView/OTPSecureInputView.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OTPInputView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OTPSecureInputView.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -476,12 +477,12 @@
 			baseConfigurationReference = 9217DAF75F3CAAEAC581774C /* Pods-OTPInputView_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 68A6P5UR82;
+				DEVELOPMENT_TEAM = H7EYDG424Q;
 				INFOPLIST_FILE = OTPInputView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.OTPInputView-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = de.identity.otpinputtest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
@@ -493,12 +494,12 @@
 			baseConfigurationReference = 4193798EFDDCD84537A78274 /* Pods-OTPInputView_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 68A6P5UR82;
+				DEVELOPMENT_TEAM = H7EYDG424Q;
 				INFOPLIST_FILE = OTPInputView/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.OTPInputView-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = de.identity.otpinputtest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
@@ -509,6 +510,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3E3B03EAA14D487C58A69B84 /* Pods-OTPInputView_Tests.debug.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = H7EYDG424Q;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -532,6 +534,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E7ED42365DACF468AB1779CE /* Pods-OTPInputView_Tests.release.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = H7EYDG424Q;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
