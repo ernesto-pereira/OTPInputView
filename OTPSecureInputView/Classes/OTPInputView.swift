@@ -14,12 +14,15 @@ public protocol OTPViewDelegate {
     func otpNotValid()
     func didEndEditing()
     func didBeginEditing()
+    func onButtonClicked()
 }
 
 public extension OTPViewDelegate {
-    func didFinishedEnterOTP(otpNumber: String) {}
+    func didFinishedEnterOTP(otpNumber: String) {
+    }
 
-    func otpNotValid() {}
+    func otpNotValid() {
+    }
 
     func didEndEditing() {
         print("didEndEditing")
@@ -28,19 +31,63 @@ public extension OTPViewDelegate {
     func didBeginEditing() {
         print("didBeginEditing")
     }
+
+    func onButtonClicked() {
+        print("onButtonClicked")
+    }
 }
 
 @IBDesignable public class OTPInputView: UIView {
     static let DEFAULT_MAX_DIGITS = 6
     @IBInspectable public var maximumDigits: Int = DEFAULT_MAX_DIGITS {
-        didSet { self.redraw() }
+        didSet {
+            self.redraw()
+        }
+    }
+    @IBInspectable public var showButton: Bool = false {
+        didSet {
+            self.secureTextEntry = showButton
+            self.redraw()
+        }
     }
     @IBInspectable var backgroundColour: UIColor = .white
     @IBInspectable var shadowColour: UIColor = .darkGray
     @IBInspectable var textColor: UIColor = .black
     @IBInspectable var font: UIFont = UIFont.boldSystemFont(ofSize: 23)
     @IBInspectable public var secureTextEntry: Bool = false {
-        didSet { self.redraw() }
+        didSet {
+            self.redraw()
+        }
+    }
+    @IBInspectable public var normalImg: UIImage =
+            UIImage(systemName: "eye",
+                    withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
+            UIImage(cgImage: CIContext().createCGImage(
+                    CIImage(color: .black),
+                    from: CGRect(origin: CGPoint(x: 0, y: 0),
+                                 size: CGSize(
+                                         width: 24,
+                                         height: 24)
+                    )
+            )!) {
+        didSet {
+            self.redraw()
+        }
+    }
+    @IBInspectable public var selectedImg: UIImage =
+            UIImage(systemName: "eye.slash",
+                    withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
+            UIImage(cgImage: CIContext().createCGImage(
+                    CIImage(color: .black),
+                    from: CGRect(origin: CGPoint(x: 0, y: 0),
+                                 size: CGSize(
+                                         width: 24,
+                                         height: 24)
+                    )
+            )!) {
+        didSet {
+            self.redraw()
+        }
     }
     public var delegateOTP: OTPViewDelegate?
     private lazy var stackView: UIStackView = {
@@ -52,6 +99,7 @@ public extension OTPViewDelegate {
         s.distribution = .fillEqually
         return s
     }()
+    private var isSecureTextEntry = true
 
     override public func prepareForInterfaceBuilder() {
         setupTextFields()
@@ -62,8 +110,7 @@ public extension OTPViewDelegate {
     }
 
     fileprivate func setupTextFields() {
-        self.maximumDigits = OTPInputView.DEFAULT_MAX_DIGITS
-        self.secureTextEntry = false
+        self.redraw()
         backgroundColor = .clear
         addSubview(stackView)
         NSLayoutConstraint.activate(
@@ -76,7 +123,7 @@ public extension OTPViewDelegate {
         )
     }
 
-    func redraw() {
+    private func redraw() {
         stackView.arrangedSubviews.forEach { view in
             stackView.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -86,6 +133,36 @@ public extension OTPViewDelegate {
             textField.tag = tag //set Tag to textField
             stackView.addArrangedSubview(textField)  // Add to stackView
             setupTextFieldStyle(textField)  // set the style accordingly
+        }
+        if showButton && secureTextEntry {
+            let rightButton = setupRightButton()
+            stackView.addArrangedSubview(rightButton)
+        }
+    }
+
+    private func setupRightButton() -> UIButton {
+        let rightButton = UIButton(type: .custom)
+        rightButton.adjustsImageWhenHighlighted = false
+        rightButton.setImage(normalImg, for: .normal)
+        rightButton.setImage(selectedImg, for: .selected)
+        rightButton.addTarget(self, action: #selector(self.buttonClicked), for: .touchUpInside)
+        return rightButton
+    }
+
+    @objc private func buttonClicked(_ sender: Any) {
+        (sender as! UIButton).isSelected = self.isSecureTextEntry
+        self.toggleSecureTextEntry()
+        isSecureTextEntry.toggle()
+
+        delegateOTP?.onButtonClicked()
+    }
+
+    private func toggleSecureTextEntry() {
+        stackView.arrangedSubviews.forEach { view in
+            if view is UITextField {
+                let uiTextField = view as! UITextField
+                uiTextField.isSecureTextEntry = !self.isSecureTextEntry
+            }
         }
     }
 
@@ -120,7 +197,9 @@ extension OTPInputView: UITextFieldDelegate {
         } else if string.count == maximumDigits {
             var otpPasted = string
             for tag in 1...maximumDigits {
-                guard let textfield = viewWithTag(tag) as? UITextField else { continue }
+                guard let textfield = viewWithTag(tag) as? UITextField else {
+                    continue
+                }
                 textfield.text = String(otpPasted.removeFirst())
             }
             otpFetch()
@@ -148,7 +227,9 @@ extension OTPInputView: UITextFieldDelegate {
     public func otpFetch() {
         var otp = ""
         for tag in 1...maximumDigits {
-            guard let textfield = viewWithTag(tag) as? UITextField else { continue }
+            guard let textfield = viewWithTag(tag) as? UITextField else {
+                continue
+            }
             otp += textfield.text!
         }
 
