@@ -18,31 +18,26 @@ public protocol OTPViewDelegate {
 }
 
 public extension OTPViewDelegate {
-    func didFinishedEnterOTP(otpNumber: String) {
-    }
-
-    func otpNotValid() {
-    }
-
-    func didEndEditing() {
-        print("didEndEditing")
-    }
-
-    func didBeginEditing() {
-        print("didBeginEditing")
-    }
-
-    func onButtonClicked() {
-        print("onButtonClicked")
-    }
+    func didFinishedEnterOTP(otpNumber: String) {}
+    func otpNotValid() {}
+    func didEndEditing() {}
+    func didBeginEditing() {}
+    func onButtonClicked() {}
 }
 
+@available(iOS 13.0, *)
 @IBDesignable public class OTPInputView: UIView {
     static let DEFAULT_MAX_DIGITS = 6
+
+    @IBInspectable var backgroundColour: UIColor = .clear
+    @IBInspectable var shadowColour: UIColor = .darkGray
+    @IBInspectable var textColor: UIColor = .black
+    @IBInspectable var font: UIFont = UIFont.boldSystemFont(ofSize: 23)
     @IBInspectable public var maximumDigits: Int = DEFAULT_MAX_DIGITS {
-        didSet {
-            self.redraw()
-        }
+        didSet { self.redraw() }
+    }
+    @IBInspectable public var secureTextEntry: Bool = false {
+        didSet { self.redraw() }
     }
     @IBInspectable public var showButton: Bool = false {
         didSet {
@@ -50,18 +45,11 @@ public extension OTPViewDelegate {
             self.redraw()
         }
     }
-    @IBInspectable var backgroundColour: UIColor = .white
-    @IBInspectable var shadowColour: UIColor = .darkGray
-    @IBInspectable var textColor: UIColor = .black
-    @IBInspectable var font: UIFont = UIFont.boldSystemFont(ofSize: 23)
-    @IBInspectable public var secureTextEntry: Bool = false {
-        didSet {
-            self.redraw()
-        }
+    @IBInspectable public var tintImg: UIColor = .white {
+        didSet { self.redraw() }
     }
     @IBInspectable public var normalImg: UIImage =
-            UIImage(systemName: "eye",
-                    withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
+            UIImage(systemName: "eye", withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
             UIImage(cgImage: CIContext().createCGImage(
                     CIImage(color: .black),
                     from: CGRect(origin: CGPoint(x: 0, y: 0),
@@ -75,8 +63,7 @@ public extension OTPViewDelegate {
         }
     }
     @IBInspectable public var selectedImg: UIImage =
-            UIImage(systemName: "eye.slash",
-                    withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
+            UIImage(systemName: "eye.slash", withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
             UIImage(cgImage: CIContext().createCGImage(
                     CIImage(color: .black),
                     from: CGRect(origin: CGPoint(x: 0, y: 0),
@@ -101,17 +88,13 @@ public extension OTPViewDelegate {
     }()
     private var isSecureTextEntry = true
 
-    override public func prepareForInterfaceBuilder() {
-        setupTextFields()
-    }
+    override public func prepareForInterfaceBuilder() { setupTextFields() }
 
-    override public func awakeFromNib() {
-        setupTextFields()
-    }
+    override public func awakeFromNib() { setupTextFields() }
 
     fileprivate func setupTextFields() {
+        backgroundColor = self.backgroundColor
         self.redraw()
-        backgroundColor = .clear
         addSubview(stackView)
         NSLayoutConstraint.activate(
                 [
@@ -143,8 +126,12 @@ public extension OTPViewDelegate {
     private func setupRightButton() -> UIButton {
         let rightButton = UIButton(type: .custom)
         rightButton.adjustsImageWhenHighlighted = false
-        rightButton.setImage(normalImg, for: .normal)
-        rightButton.setImage(selectedImg, for: .selected)
+
+        let normalStateImg = self.normalImg.withTintColor(tintImg, renderingMode: .alwaysOriginal)
+        let selectedStateImg = self.selectedImg.withTintColor(tintImg, renderingMode: .alwaysOriginal)
+
+        rightButton.setImage(normalStateImg, for: .normal)
+        rightButton.setImage(selectedStateImg, for: .selected)
         rightButton.addTarget(self, action: #selector(self.buttonClicked), for: .touchUpInside)
         return rightButton
     }
@@ -175,11 +162,13 @@ public extension OTPViewDelegate {
         textField.layer.cornerRadius = 10
         textField.dropShadow(shadowOpacity: 0.6, shadowColor: shadowColour)
         textField.textColor = textColor
+        textField.tintColor = textColor
         textField.font = font
         textField.isSecureTextEntry = secureTextEntry
     }
 }
 
+@available(iOS 13.0, *)
 extension OTPInputView: UITextFieldDelegate {
 
     public func textField(_ textField: UITextField,
