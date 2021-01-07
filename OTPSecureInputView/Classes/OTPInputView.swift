@@ -25,7 +25,6 @@ public extension OTPViewDelegate {
     func onButtonClicked() {}
 }
 
-@available(iOS 13.0, *)
 @IBDesignable public class OTPInputView: UIView {
     static let DEFAULT_MAX_DIGITS = 6
 
@@ -48,30 +47,17 @@ public extension OTPViewDelegate {
     @IBInspectable public var tintImg: UIColor = .white {
         didSet { self.redraw() }
     }
-    @IBInspectable public var normalImg: UIImage =
-            UIImage(systemName: "eye", withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
-            UIImage(cgImage: CIContext().createCGImage(
-                    CIImage(color: .black),
-                    from: CGRect(origin: CGPoint(x: 0, y: 0),
-                                 size: CGSize(
-                                         width: 24,
-                                         height: 24)
-                    )
-            )!) {
+    @available(iOS 13.0, *)
+    @IBInspectable public lazy var normalImg: UIImage =
+            UIImage(systemName: "eye", withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ?? OTPInputView.VisibilityIcon
+             {
         didSet {
             self.redraw()
         }
     }
-    @IBInspectable public var selectedImg: UIImage =
-            UIImage(systemName: "eye.slash", withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ??
-            UIImage(cgImage: CIContext().createCGImage(
-                    CIImage(color: .black),
-                    from: CGRect(origin: CGPoint(x: 0, y: 0),
-                                 size: CGSize(
-                                         width: 24,
-                                         height: 24)
-                    )
-            )!) {
+    @available(iOS 13.0, *)
+    @IBInspectable public lazy var selectedImg: UIImage =
+            UIImage(systemName: "eye.slash", withConfiguration: UIImage.SymbolConfiguration(scale: .large)) ?? OTPInputView.VisibilityOffIcon {
         didSet {
             self.redraw()
         }
@@ -86,6 +72,17 @@ public extension OTPViewDelegate {
         s.distribution = .fillEqually
         return s
     }()
+    
+    private static var VisibilityIcon: UIImage {
+        let bundle = Bundle(for: self)
+        return UIImage(named: "ic_visibility", in: bundle, compatibleWith: nil)!
+    }
+
+    private static var VisibilityOffIcon: UIImage {
+        let bundle = Bundle(for: self)
+        return UIImage(named: "ic_visibility_off", in: bundle, compatibleWith: nil)!
+    }
+    
     private var isSecureTextEntry = true
 
     override public func prepareForInterfaceBuilder() { setupTextFields() }
@@ -126,10 +123,18 @@ public extension OTPViewDelegate {
     private func setupRightButton() -> UIButton {
         let rightButton = UIButton(type: .custom)
         rightButton.adjustsImageWhenHighlighted = false
-
-        let normalStateImg = self.normalImg.withTintColor(tintImg, renderingMode: .alwaysOriginal)
-        let selectedStateImg = self.selectedImg.withTintColor(tintImg, renderingMode: .alwaysOriginal)
-
+        
+        var normalStateImg = OTPInputView.VisibilityIcon
+        var selectedStateImg = OTPInputView.VisibilityOffIcon
+        
+        if #available(iOS 13.0, *) {
+            normalStateImg = self.normalImg.withTintColor(tintImg, renderingMode: .alwaysOriginal)
+            selectedStateImg = self.selectedImg.withTintColor(tintImg, renderingMode: .alwaysOriginal)
+        } else {
+            normalStateImg = normalStateImg.maskWithColor(color: tintImg)!
+            selectedStateImg = selectedStateImg.maskWithColor(color: tintImg)!
+        }
+        
         rightButton.setImage(normalStateImg, for: .normal)
         rightButton.setImage(selectedStateImg, for: .selected)
         rightButton.addTarget(self, action: #selector(self.buttonClicked), for: .touchUpInside)
@@ -168,7 +173,6 @@ public extension OTPViewDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 extension OTPInputView: UITextFieldDelegate {
 
     public func textField(_ textField: UITextField,
@@ -257,4 +261,31 @@ extension UIView {
         layer.shadowOffset = offsetSize
         layer.shadowRadius = shadowRadius
     }
+}
+
+extension UIImage {
+
+    func maskWithColor(color: UIColor) -> UIImage? {
+        let maskImage = cgImage!
+
+        let width = size.width
+        let height = size.height
+        let bounds = CGRect(x: 0, y: 0, width: width, height: height)
+
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+        let context = CGContext(data: nil, width: Int(width), height: Int(height), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)!
+
+        context.clip(to: bounds, mask: maskImage)
+        context.setFillColor(color.cgColor)
+        context.fill(bounds)
+
+        if let cgImage = context.makeImage() {
+            let coloredImage = UIImage(cgImage: cgImage)
+            return coloredImage
+        } else {
+            return nil
+        }
+    }
+
 }
