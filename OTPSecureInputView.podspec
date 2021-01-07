@@ -27,9 +27,14 @@ Pod::Spec.new do |s|
   s.author           = { 'abhishek-001' => 'work.abhirathi@gmail.com' }
   s.source           = { :git => 'https://github.com/ernesto-pereira/OTPInputView.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '11.0'
-
+  s.ios.deployment_target = '12.0'
+  s.resources = ['Assets/**/*.png']
   s.source_files = 'OTPSecureInputView/Classes/*.swift'
+  s.resource_bundles = {
+    'OTPSecureInputView' => [
+        'Assets/**/*.{png}'
+    ]
+  }
   s.frameworks = 'UIKit'
   s.swift_version = '4.0'
   

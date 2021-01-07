@@ -1,5 +1,5 @@
 PODS:
-  - OTPSecureInputView (0.0.8)
+  - OTPSecureInputView (0.0.9)
 
 DEPENDENCIES:
   - OTPSecureInputView (from `../`)
@@ -9,8 +9,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  OTPSecureInputView: f535a303b537dddb0d4be1292ccd3830c43d78f7
+  OTPSecureInputView: af0abd8c0c1ef7e0a3be37041c7f701fe9246306
 
-PODFILE CHECKSUM: ef0897d169290ed7d47ca6419c98fbb1de24f9bc
+PODFILE CHECKSUM: 39d828c31bb2d175b9d5b9350fafb10411fd0207
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
