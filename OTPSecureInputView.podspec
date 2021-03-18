@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'OTPSecureInputView'
-  s.version          = '1.0.0'
+  s.version          = '1.1.0'
   s.summary          = 'OTP SecureInputView is a simple, Fully customisable OTP code verification view in Swift.'
 
 # This description is used to generate tags and improve search results.
