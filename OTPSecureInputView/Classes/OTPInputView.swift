@@ -27,11 +27,19 @@ public extension OTPViewDelegate {
 
 @IBDesignable public class OTPInputView: UIView {
     static let DEFAULT_MAX_DIGITS = 6
+    static let DEFAULT_SPACING = 10
+    static let DEFAULT_ICON_SIZE = 45
 
     @IBInspectable var backgroundColour: UIColor = .clear
     @IBInspectable var shadowColour: UIColor = .darkGray
     @IBInspectable var textColor: UIColor = .black
     @IBInspectable var font: UIFont = UIFont.boldSystemFont(ofSize: 23)
+    @IBInspectable public var spacing: Int = DEFAULT_SPACING {
+        didSet { self.redraw() }
+    }
+    @IBInspectable public var sizeImg: Int = DEFAULT_ICON_SIZE {
+        didSet { self.redraw() }
+    }
     @IBInspectable public var maximumDigits: Int = DEFAULT_MAX_DIGITS {
         didSet { self.redraw() }
     }
@@ -68,8 +76,16 @@ public extension OTPViewDelegate {
         s.translatesAutoresizingMaskIntoConstraints = false
         s.axis = .horizontal
         s.alignment = .fill
-        s.spacing = 10
         s.distribution = .fillEqually
+        return s
+    }()
+    
+    private lazy var stackViewWrapper: UIStackView = {
+        let s = UIStackView()
+        s.translatesAutoresizingMaskIntoConstraints = false
+        s.axis = .horizontal
+        s.alignment = .fill
+        s.distribution = .fillProportionally
         return s
     }()
     
@@ -90,20 +106,24 @@ public extension OTPViewDelegate {
     override public func awakeFromNib() { setupTextFields() }
 
     fileprivate func setupTextFields() {
-        backgroundColor = self.backgroundColor
+        stackViewWrapper.backgroundColor = backgroundColour
         self.redraw()
-        addSubview(stackView)
+        addSubview(stackViewWrapper)
         NSLayoutConstraint.activate(
-                [
-                    stackView.widthAnchor.constraint(equalTo: widthAnchor),
-                    stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-                    stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-                    stackView.heightAnchor.constraint(equalTo: heightAnchor)
-                ]
+            [
+                stackViewWrapper.widthAnchor.constraint(equalTo: widthAnchor),
+                stackViewWrapper.centerXAnchor.constraint(equalTo: centerXAnchor),
+                stackViewWrapper.centerYAnchor.constraint(equalTo: centerYAnchor),
+                stackViewWrapper.heightAnchor.constraint(equalTo: heightAnchor)
+            ]
         )
     }
 
     private func redraw() {
+        stackViewWrapper.arrangedSubviews.forEach { view in
+            stackViewWrapper.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
         stackView.arrangedSubviews.forEach { view in
             stackView.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -114,9 +134,13 @@ public extension OTPViewDelegate {
             stackView.addArrangedSubview(textField)  // Add to stackView
             setupTextFieldStyle(textField)  // set the style accordingly
         }
+        stackView.spacing = CGFloat(spacing)
         if showButton && secureTextEntry {
             let rightButton = setupRightButton()
-            stackView.addArrangedSubview(rightButton)
+            stackViewWrapper.addArrangedSubview(stackView)
+            stackViewWrapper.addArrangedSubview(rightButton)
+        } else {
+            stackViewWrapper.addArrangedSubview(stackView)
         }
     }
 
@@ -124,6 +148,9 @@ public extension OTPViewDelegate {
         let rightButton = UIButton(type: .custom)
         rightButton.adjustsImageWhenHighlighted = false
         
+        let imageViewWidthConstraint = NSLayoutConstraint(item: rightButton, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: CGFloat(sizeImg))
+        let imageViewHeightConstraint = NSLayoutConstraint(item: rightButton, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: CGFloat(sizeImg))
+        rightButton.addConstraints([imageViewWidthConstraint, imageViewHeightConstraint])
         var normalStateImg = OTPInputView.VisibilityIcon
         var selectedStateImg = OTPInputView.VisibilityOffIcon
         
