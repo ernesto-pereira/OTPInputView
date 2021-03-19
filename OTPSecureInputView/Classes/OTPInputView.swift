@@ -243,6 +243,21 @@ extension OTPInputView: UITextFieldDelegate {
     public func textFieldDidEndEditing(_ textField: UITextField) {
         delegateOTP?.didEndEditing()
     }
+    
+    public func otpSet(content: String) throws{
+        let digits = content.compactMap{ $0.wholeNumberValue }
+        if(digits.count != maximumDigits){
+            throw OTPInputViewError.digitMismatch("Attempt to set OTP content with mismatched length.")
+        }
+        var digitCounter = 0
+        for tag in 1...maximumDigits{
+            guard let textfield = viewWithTag(tag) as? UITextField else{
+                continue
+            }
+            textfield.text = String(digits[digitCounter])
+            digitCounter+=1
+        }
+    }
 
     public func otpFetch() {
         var otp = ""
@@ -315,4 +330,8 @@ extension UIImage {
         }
     }
 
+}
+
+enum OTPInputViewError: Error {
+    case digitMismatch(String)
 }

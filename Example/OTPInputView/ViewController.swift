@@ -16,6 +16,11 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         otpInputView.delegateOTP = self
+        do{
+            try otpInputView.otpSet(content: "12345")
+        } catch {
+            
+        }
     }
 
     override func didReceiveMemoryWarning() {
